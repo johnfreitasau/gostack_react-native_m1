@@ -14,23 +14,30 @@ import {
 export default function App() {
   
   const [repositories, setRepositories] = useState([]);
-  //const [likes, setLikes] = useState({});
-
-  async function handleLikeRepository(id) {
-
-    await api.post(`/repositories/${id}/like`);
-
-    api.get('repositories').then(response => {
-          setRepositories(response.data)
-    })
-  }
 
   useEffect(()=> {
     api.get('repositories').then(response => {
-      //console.log(response)
       setRepositories(response.data)
     });
   }, [])
+  
+  async function handleLikeRepository(id) {
+
+    const response = await api.post(`/repositories/${id}/like`);
+
+    const likeRepo = response.data; 
+
+    const newRepo = repositories.map(repository => {
+      if(repository.id === id) {
+        return likeRepo;
+      } else 
+      {
+        return repository;
+      }
+    });
+
+    setRepositories(newRepo)
+  }
 
   return (
     <>
